@@ -13,14 +13,30 @@
 		/// </summary>
 		private const string DefaultLog4NetConfigFile = "log4net.config";
 
-		/// <summary>
+        /// <summary>
 		/// Adds the log4 net.
 		/// </summary>
 		/// <param name="factory">The factory.</param>
 		/// <param name="log4NetConfigFile">The log4 net configuration file.</param>
-		/// <param name="watch">if set to <c>true</c> [watch].</param>
+		/// <param name="log4NetParams">The Log4Net parameters</param>
 		/// <returns>The <see cref="ILoggerFactory"/> with added Log4Net provider</returns>
 		public static ILoggerFactory AddLog4Net(
+            this ILoggerFactory factory,
+            string log4NetConfigFile,
+            Log4NetParams log4NetParams)
+        {
+            factory.AddProvider(new Log4NetProvider(log4NetConfigFile, log4NetParams));
+            return factory;
+        }
+
+        /// <summary>
+        /// Adds the log4 net.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
+        /// <param name="log4NetConfigFile">The log4 net configuration file.</param>
+        /// <param name="watch">if set to <c>true</c> [watch].</param>
+        /// <returns>The <see cref="ILoggerFactory"/> with added Log4Net provider</returns>
+        public static ILoggerFactory AddLog4Net(
 			this ILoggerFactory factory,
 			string log4NetConfigFile,
 			bool watch)
@@ -109,6 +125,21 @@
         /// </summary>
         /// <param name="builder">The logging builder instance.</param>
         /// <param name="log4NetConfigFile">The log4net Config File.</param>
+        /// <param name="log4NetParams">The Log4Net parameters</param>
+        /// <returns>
+        /// The <see ref="ILoggingBuilder" /> passed as parameter with the new provider registered.
+        /// </returns>
+        public static ILoggingBuilder AddLog4Net(this ILoggingBuilder builder, string log4NetConfigFile, Log4NetParams log4NetParams)
+        {
+            builder.Services.AddSingleton<ILoggerProvider>(new Log4NetProvider(log4NetConfigFile, log4NetParams));
+            return builder; 
+        }
+
+        /// <summary>
+        /// Adds the log4net logging provider.
+        /// </summary>
+        /// <param name="builder">The logging builder instance.</param>
+        /// <param name="log4NetConfigFile">The log4net Config File.</param>
         /// <param name="watch">if set to <c>true</c>, the configuration will be reloaded when the xml configuration file changes.</param>
         /// <returns>
         /// The <see ref="ILoggingBuilder" /> passed as parameter with the new provider registered.
@@ -119,5 +150,5 @@
             return builder; 
         }
 #endif
-	}
+    }
 }
